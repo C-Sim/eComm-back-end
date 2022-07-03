@@ -40,7 +40,7 @@ const getCategoryById = async (req, res) => {
         `[ERROR]: Failed to find category | No category with id of ${id}`
       );
 
-      return res.status(401).json({ error: "Failed to find category" });
+      return res.status(404).json({ error: "Failed to find category" });
     }
 
     return res.json({
@@ -116,7 +116,18 @@ const deleteCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await req.db.query("DELETE FROM categories WHERE id=?", [id]);
+    const category = await Category.destroy({
+      where: { id },
+      //   include: [Product],
+    });
+
+    if (!category) {
+      console.log(
+        `[ERROR]: Failed to find category | No category with id of ${id}`
+      );
+
+      return res.status(404).json({ error: "Failed to find category" });
+    }
 
     return res.json({
       success: true,
