@@ -1,6 +1,7 @@
 const express = require("express");
 const routes = require("./routes");
 const connection = require("./config/connection");
+const { Category } = require("./models");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,6 +16,14 @@ const init = async () => {
   try {
     // connect to DB
     await connection.sync({ force: false });
+
+    // const promises = categories.map((category) => {
+    //   return Category.create(category)
+
+    //   await Promise.all(promises)
+
+    //   process.exit(0)
+    // })
 
     // server listen on PORT
     app.listen(PORT, () => {
