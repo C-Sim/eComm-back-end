@@ -3,7 +3,6 @@ const { Category, Product } = require("../../models");
 
 const getAllCategories = async (req, res) => {
   // be sure to include its associated Products
-  // - if internal server error return a status code of 500
   try {
     const categories = await Category.findAll({
       include: [Product],
@@ -25,8 +24,6 @@ const getAllCategories = async (req, res) => {
 
 const getCategoryById = async (req, res) => {
   // be sure to include its associated Products
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
   try {
     const { id } = req.params;
 
@@ -58,19 +55,26 @@ const getCategoryById = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
-  // - validate the payload and if bad request return status code of 400
-  // - if internal server error return a status code of 500
   try {
-    const payload = req.body;
+    const { category_name } = req.body;
 
-    // TODO fix parameters and payload params
-    await req.db.query(
-      "INSERT INTO categories (title, imageUrl) VALUES (?, ?)",
-      [payload.name, payload.imageUrl]
-    );
+    const category = await Category.findOne({ where: { category_name } });
+
+    if (category) {
+      console.log(
+        `[ERROR]: Failed to create category | Category of ${category_name} already exists`
+      );
+
+      return res.status(400).json({ error: "Failed to create category" });
+    }
+
+    const newCategory = await Category.create({
+      category_name,
+    });
 
     return res.json({
       success: true,
+      data: newCategory,
     });
   } catch (error) {
     console.log(`[ERROR: Failed to create category | ${error.message}]`);
@@ -83,22 +87,40 @@ const createCategory = async (req, res) => {
 };
 
 const updateCategoryById = async (req, res) => {
-  // - validate the payload and if bad request return status code of 400
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
   try {
-    const payload = req.body;
+    const { category_name } = req.body;
     const { id } = req.params;
 
-    // TODO fix parameters and payload params
-    await req.db.query("UPDATE categories SET title=?, imageUrl=? WHERE id=?", [
-      payload.name,
-      payload.imageUrl,
-      id,
-    ]);
+    const category = await Category.findOne({ where: { category_name } });
+
+    if (!category) {
+      console.log(
+        `[ERROR]: Failed to find category | No category with id of ${id}`
+      );
+
+      return res.status(404).json({ error: "Failed to find category" });
+    }
+
+    const updatedCategory = await Category.update(
+      { category_name },
+      {
+        where: { id },
+      }
+    );
+
+    // - validate the payload and if bad request return status code of 400
+    // TODO figure out how to check updatedCategory name vs all existing category names
+    if (category === updatedCategory) {
+      console.log(
+        `[ERROR]: Failed to update category | Category of ${category_name} already exists`
+      );
+
+      return res.status(400).json({ error: "Failed to update category" });
+    }
 
     return res.json({
       success: true,
+      data: updatedCategory,
     });
   } catch (error) {
     console.log(`[ERROR: Failed to update category | ${error.message}]`);
@@ -111,8 +133,6 @@ const updateCategoryById = async (req, res) => {
 };
 
 const deleteCategoryById = async (req, res) => {
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
   try {
     const { id } = req.params;
 
