@@ -138,7 +138,6 @@ const deleteCategoryById = async (req, res) => {
 
     const category = await Category.destroy({
       where: { id },
-      //   include: [Product],
     });
 
     if (!category) {

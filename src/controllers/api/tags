@@ -1,20 +1,55 @@
 // const router = require("express").Router();
 const { Tag, Product, ProductTag } = require("../../models");
 
-
 const getAllTags = async (req, res) => {
-  // find all categories
   // be sure to include its associated Product data
-  // - /api/tags
-  // - if internal server error return a status code of 500
+  try {
+    const tags = await Tag.findAll({
+      include: [Product, ProductTag],
+    });
+
+    return res.json({
+      success: true,
+      data: tags,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to get tags | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to get tags",
+    });
+  }
 };
 
 const getTagById = async (req, res) => {
-  // find one Tag by its `id` value
   // be sure to include its associated Product data
-  // - /api/tags/:id
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
+  try {
+    const { id } = req.params;
+
+    const tag = await Tag.findOne({
+      where: { id },
+      include: [Product, ProductTag],
+    });
+
+    if (!tag) {
+      console.log(`[ERROR]: Failed to find tag | No tag with id of ${id}`);
+
+      return res.status(404).json({ error: "Failed to find tag" });
+    }
+
+    return res.json({
+      success: true,
+      data: tag,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to get tag | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to get tag",
+    });
+  }
 };
 
 const createTag = async (req, res) => {
@@ -33,10 +68,30 @@ const updateTagById = async (req, res) => {
 };
 
 const deleteTagById = async (req, res) => {
-  // delete a Tag by its `id` value
-  // - /api/tags/:id
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
+  try {
+    const { id } = req.params;
+
+    const tag = await Tag.destroy({
+      where: { id },
+    });
+
+    if (!tag) {
+      console.log(`[ERROR]: Failed to find tag | No tag with id of ${id}`);
+
+      return res.status(404).json({ error: "Failed to find tag" });
+    }
+
+    return res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to delete tag | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete tag",
+    });
+  }
 };
 
 module.exports = {

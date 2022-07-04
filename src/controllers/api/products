@@ -2,18 +2,56 @@
 const { Product, Category, Tag, ProductTag } = require("../../models");
 
 const getAllProducts = async (req, res) => {
-  // find all categories
   // be sure to include its associated Category and Tag data
-  // - /api/products
-  // - if internal server error return a status code of 500
+  try {
+    const products = await Product.findAll({
+      include: [Category, ProductTag, Tag],
+    });
+
+    return res.json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to get products | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to get products",
+    });
+  }
 };
 
 const getProductById = async (req, res) => {
-  // find one Product by its `id` value
   // be sure to include its associated Category and Tag data
-  // - /api/products/:id
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findOne({
+      where: { id },
+      include: [Category, ProductTag, Tag],
+    });
+
+    if (!product) {
+      console.log(
+        `[ERROR]: Failed to find product | No product with id of ${id}`
+      );
+
+      return res.status(404).json({ error: "Failed to find product" });
+    }
+
+    return res.json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to get product | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to get product",
+    });
+  }
 };
 
 const createProduct = async (req, res) => {
@@ -32,10 +70,32 @@ const updateProductById = async (req, res) => {
 };
 
 const deleteProductById = async (req, res) => {
-  // delete a Product by its `id` value
-  // - /api/products/:id
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
+  try {
+    const { id } = req.params;
+
+    const product = await Product.destroy({
+      where: { id },
+    });
+
+    if (!product) {
+      console.log(
+        `[ERROR]: Failed to find product | No product with id of ${id}`
+      );
+
+      return res.status(404).json({ error: "Failed to find product" });
+    }
+
+    return res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to delete product | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to delete product",
+    });
+  }
 };
 
 module.exports = {
