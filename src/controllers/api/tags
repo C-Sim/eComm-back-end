@@ -53,18 +53,79 @@ const getTagById = async (req, res) => {
 };
 
 const createTag = async (req, res) => {
-  // create a new Tag
-  // - /api/tags
-  // - validate the payload and if bad request return status code of 400
-  // - if internal server error return a status code of 500
+  try {
+    const { tag_name } = req.body;
+
+    const tag = await Tag.findOne({ where: { tag_name } });
+
+    if (tag) {
+      console.log(
+        `[ERROR]: Failed to create tag | Tag of ${tag_name} already exists`
+      );
+
+      return res.status(400).json({ error: "Failed to create tag" });
+    }
+
+    const newTag = await Tag.create({
+      tag_name,
+    });
+
+    return res.json({
+      success: true,
+      data: newTag,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to create tag | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to create tag",
+    });
+  }
 };
 
 const updateTagById = async (req, res) => {
-  // update a Tag by its `id` value
-  // - /api/tags/:id
-  // - validate the payload and if bad request return status code of 400
-  // - if not found return a status of 404
-  // - if internal server error return a status code of 500
+  try {
+    const { tag_name } = req.body;
+    const { id } = req.params;
+
+    const tag = await Tag.findOne({ where: { tag_name } });
+
+    if (!tag) {
+      console.log(`[ERROR]: Failed to find tag | No tag with id of ${id}`);
+
+      return res.status(404).json({ error: "Failed to find tag" });
+    }
+
+    const updatedTag = await Tag.update(
+      { tag_name },
+      {
+        where: { id },
+      }
+    );
+
+    // - validate the payload and if bad request return status code of 400
+    // TODO figure out how to check updatedTag name vs all existing tag names
+    if (tag === updatedTag) {
+      console.log(
+        `[ERROR]: Failed to update tag | Tag of ${tag_name} already exists`
+      );
+
+      return res.status(400).json({ error: "Failed to update tag" });
+    }
+
+    return res.json({
+      success: true,
+      data: updatedTag,
+    });
+  } catch (error) {
+    console.log(`[ERROR: Failed to update tag | ${error.message}]`);
+
+    return res.status(500).json({
+      success: false,
+      error: "Failed to update tag",
+    });
+  }
 };
 
 const deleteTagById = async (req, res) => {
