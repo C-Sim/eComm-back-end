@@ -6,53 +6,34 @@ Back end for an e-commerce site. Configuration of a working Express.js API to us
 
 ## Technologies
 
-- MySQL
-- Inquirer
+- MySQL2
+- Sequelize
+- Express
 - Node
 - Nodemon
-- Figlet
-- Chalk
+- dotenv
 
 ## Screenshots
 
 <details>
-<summary>CLI User Journey - Top Menu</summary>
+<summary>Endpoint example</summary>
 
-![welcome](...)
-
-</details>
-
-<details>
-<summary>View Tables</summary>
-
-![view-tables](...)
+![endpoint](ssEndpoint.png)
 
 </details>
 
 <details>
-<summary>Add Information</summary>
+<summary>Postman GET example</summary>
 
-![add-info](...)
-
-</details>
-
-<details>
-<summary>Update Information</summary>
-
-![update-info](...)
-
-</details>
-
-<details>
-<summary>Delete Information</summary>
-
-![delete-info](...)
+![Postman](ssPostman.png)
 
 </details>
 
 <br>
 
 ## Endpoint summary
+
+/GET
 
 ## User Story
 
