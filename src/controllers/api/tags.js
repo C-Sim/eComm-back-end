@@ -72,14 +72,16 @@ const createTag = async (req, res) => {
         `[ERROR]: Failed to create tag | Tag of ${tag_name} already exists`
       );
 
-      return res.status(400).json({ error: "Failed to create tag" });
+      return res.status(400).json({
+        error: `Failed to create tag | Tag of ${tag_name} already exists`,
+      });
     }
 
     const newTag = await Tag.create({
       tag_name,
     });
 
-    return res.json({
+    return res.status(201).json({
       success: true,
       data: newTag,
     });
@@ -115,7 +117,11 @@ const updateTagById = async (req, res) => {
         `[ERROR]: Failed to update tag | Tag of ${tag_name} already exists`
       );
 
-      return res.status(400).json({ error: "Failed to update tag" });
+      return res
+        .status(400)
+        .json({
+          error: `Failed to update tag | Tag of ${tag_name} already exists`,
+        });
     }
 
     const updatedTag = await Tag.update(
@@ -127,7 +133,6 @@ const updateTagById = async (req, res) => {
 
     return res.json({
       success: true,
-      data: updatedTag,
     });
   } catch (error) {
     console.log(`[ERROR: Failed to update tag | ${error.message}]`);

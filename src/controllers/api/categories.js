@@ -4,7 +4,12 @@ const getAllCategories = async (req, res) => {
   // be sure to include its associated Products
   try {
     const categories = await Category.findAll({
-      include: [Product],
+      include: [
+        {
+          model: Product,
+          attributes: ["id", "product_name", "price", "stock"],
+        },
+      ],
     });
 
     return res.json({
@@ -28,7 +33,12 @@ const getCategoryById = async (req, res) => {
 
     const category = await Category.findOne({
       where: { id },
-      include: [Product],
+      include: [
+        {
+          model: Product,
+          attributes: ["id", "product_name", "price", "stock"],
+        },
+      ],
     });
 
     if (!category) {
@@ -64,14 +74,16 @@ const createCategory = async (req, res) => {
         `[ERROR]: Failed to create category | Category of ${category_name} already exists`
       );
 
-      return res.status(400).json({ error: "Failed to create category" });
+      return res.status(400).json({
+        error: `Failed to create category | Category of ${category_name} already exists`,
+      });
     }
 
     const newCategory = await Category.create({
       category_name,
     });
 
-    return res.json({
+    return res.status(201).json({
       success: true,
       data: newCategory,
     });
@@ -109,7 +121,9 @@ const updateCategoryById = async (req, res) => {
         `[ERROR]: Failed to update category | Category of ${category_name} already exists`
       );
 
-      return res.status(400).json({ error: "Failed to update category" });
+      return res.status(400).json({
+        error: `Failed to update category | Category of ${category_name} already exists`,
+      });
     }
 
     const updatedCategory = await Category.update(
@@ -121,7 +135,6 @@ const updateCategoryById = async (req, res) => {
 
     return res.json({
       success: true,
-      data: updatedCategory,
     });
   } catch (error) {
     console.log(`[ERROR: Failed to update category | ${error.message}]`);
