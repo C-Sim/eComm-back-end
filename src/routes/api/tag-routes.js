@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Tag, Product, ProductTag } = require("../../models");
+// const { Tag, Product, ProductTag } = require("../../models");
 
 const {
   getAllTags,
@@ -9,10 +9,10 @@ const {
   deleteTagById,
 } = require("../../controllers/api/tags");
 
-router.get("/api/tags", getAllTags);
-router.get("/api/tags/:id", getTagById);
-router.post("/api/tags", createTag);
-router.put("/api/tags/:id", updateTagById);
-router.delete("/api/tags/:id", deleteTagById);
+router.get("/", getAllTags);
+router.get("/:id", getTagById);
+router.post("/", createTag);
+router.put("/:id", updateTagById);
+router.delete("/:id", deleteTagById);
 
 module.exports = router;

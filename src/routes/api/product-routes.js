@@ -10,11 +10,11 @@ const {
   deleteProductById,
 } = require("../../controllers/api/products");
 
-router.get("/api/products", getAllProducts);
-router.get("/api/products/:id", getProductById);
-router.post("/api/products", createProduct);
-router.put("/api/products/:id", updateProductById);
-router.delete("/api/products/:id", deleteProductById);
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
+router.post("/", createProduct);
+router.put("/:id", updateProductById);
+router.delete("/:id", deleteProductById);
 
 // router.use("/:categoryId/categories", categories)
 

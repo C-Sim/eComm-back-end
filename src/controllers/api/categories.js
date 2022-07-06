@@ -1,4 +1,3 @@
-// const router = require("express").Router();
 const { Category, Product } = require("../../models");
 
 const getAllCategories = async (req, res) => {
@@ -91,7 +90,11 @@ const updateCategoryById = async (req, res) => {
     const { category_name } = req.body;
     const { id } = req.params;
 
-    const category = await Category.findOne({ where: { category_name } });
+    const category = await Category.findOne({ where: { id } });
+
+    const existingCategory = await Category.findOne({
+      where: { category_name },
+    });
 
     if (!category) {
       console.log(
@@ -101,22 +104,20 @@ const updateCategoryById = async (req, res) => {
       return res.status(404).json({ error: "Failed to find category" });
     }
 
-    const updatedCategory = await Category.update(
-      { category_name },
-      {
-        where: { id },
-      }
-    );
-
-    // - validate the payload and if bad request return status code of 400
-    // TODO figure out how to check updatedCategory name vs all existing category names
-    if (category === updatedCategory) {
+    if (existingCategory) {
       console.log(
         `[ERROR]: Failed to update category | Category of ${category_name} already exists`
       );
 
       return res.status(400).json({ error: "Failed to update category" });
     }
+
+    const updatedCategory = await Category.update(
+      { category_name },
+      {
+        where: { id },
+      }
+    );
 
     return res.json({
       success: true,

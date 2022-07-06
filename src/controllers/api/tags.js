@@ -1,11 +1,15 @@
-// const router = require("express").Router();
 const { Tag, Product, ProductTag } = require("../../models");
 
 const getAllTags = async (req, res) => {
   // be sure to include its associated Product data
   try {
     const tags = await Tag.findAll({
-      include: [Product, ProductTag],
+      include: [
+        {
+          model: Product,
+          through: ProductTag,
+        },
+      ],
     });
 
     return res.json({
@@ -29,7 +33,12 @@ const getTagById = async (req, res) => {
 
     const tag = await Tag.findOne({
       where: { id },
-      include: [Product, ProductTag],
+      include: [
+        {
+          model: Product,
+          through: ProductTag,
+        },
+      ],
     });
 
     if (!tag) {
@@ -89,12 +98,24 @@ const updateTagById = async (req, res) => {
     const { tag_name } = req.body;
     const { id } = req.params;
 
-    const tag = await Tag.findOne({ where: { tag_name } });
+    const tag = await Tag.findOne({ where: { id } });
+
+    const existingTag = await Tag.findOne({
+      where: { tag_name },
+    });
 
     if (!tag) {
       console.log(`[ERROR]: Failed to find tag | No tag with id of ${id}`);
 
       return res.status(404).json({ error: "Failed to find tag" });
+    }
+
+    if (existingTag) {
+      console.log(
+        `[ERROR]: Failed to update tag | Tag of ${tag_name} already exists`
+      );
+
+      return res.status(400).json({ error: "Failed to update tag" });
     }
 
     const updatedTag = await Tag.update(
@@ -103,16 +124,6 @@ const updateTagById = async (req, res) => {
         where: { id },
       }
     );
-
-    // - validate the payload and if bad request return status code of 400
-    // TODO figure out how to check updatedTag name vs all existing tag names
-    if (tag === updatedTag) {
-      console.log(
-        `[ERROR]: Failed to update tag | Tag of ${tag_name} already exists`
-      );
-
-      return res.status(400).json({ error: "Failed to update tag" });
-    }
 
     return res.json({
       success: true,
