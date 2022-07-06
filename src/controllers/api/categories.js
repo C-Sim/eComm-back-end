@@ -1,7 +1,6 @@
 const { Category, Product } = require("../../models");
 
 const getAllCategories = async (req, res) => {
-  // be sure to include its associated Products
   try {
     const categories = await Category.findAll({
       include: [
@@ -27,7 +26,6 @@ const getAllCategories = async (req, res) => {
 };
 
 const getCategoryById = async (req, res) => {
-  // be sure to include its associated Products
   try {
     const { id } = req.params;
 
@@ -126,7 +124,7 @@ const updateCategoryById = async (req, res) => {
       });
     }
 
-    const updatedCategory = await Category.update(
+    await Category.update(
       { category_name },
       {
         where: { id },

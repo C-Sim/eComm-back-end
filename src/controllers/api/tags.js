@@ -1,7 +1,6 @@
 const { Tag, Product, ProductTag } = require("../../models");
 
 const getAllTags = async (req, res) => {
-  // be sure to include its associated Product data
   try {
     const tags = await Tag.findAll({
       include: [
@@ -27,7 +26,6 @@ const getAllTags = async (req, res) => {
 };
 
 const getTagById = async (req, res) => {
-  // be sure to include its associated Product data
   try {
     const { id } = req.params;
 
@@ -117,14 +115,12 @@ const updateTagById = async (req, res) => {
         `[ERROR]: Failed to update tag | Tag of ${tag_name} already exists`
       );
 
-      return res
-        .status(400)
-        .json({
-          error: `Failed to update tag | Tag of ${tag_name} already exists`,
-        });
+      return res.status(400).json({
+        error: `Failed to update tag | Tag of ${tag_name} already exists`,
+      });
     }
 
-    const updatedTag = await Tag.update(
+    await Tag.update(
       { tag_name },
       {
         where: { id },

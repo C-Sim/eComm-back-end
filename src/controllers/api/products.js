@@ -125,7 +125,7 @@ const updateProductById = async (req, res) => {
       return res.status(404).json({ error: "Failed to find product" });
     }
 
-    const updatedProduct = await Product.update(
+    await Product.update(
       { product_name, price, stock, category_id, tagIds },
       {
         where: { id },
