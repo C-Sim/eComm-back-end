@@ -2,7 +2,7 @@
 
 Back end for an e-commerce site. Configuration of a working Express.js API to use Sequelize to interact with a MySQL database.
 
-[Demo](...)
+[Demo](https://drive.google.com/file/d/1ZsGv_8xPxgYXTafwbNoTRKxS7y16YVn6/view?usp=sharing)
 
 ## Technologies
 
@@ -33,7 +33,7 @@ Back end for an e-commerce site. Configuration of a working Express.js API to us
 
 ## Endpoint summary
 
-/GET
+![Endpoint Summary](ssEndpointSummary.png)
 
 ## User Story
 
