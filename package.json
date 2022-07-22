@@ -1,0 +1,31 @@
+{
+  "name": "ecomm-back-end",
+  "version": "1.0.0",
+  "description": "Back end for an e-commerce site. Configuration of a working Express.js API to use Sequelize to interact with a MySQL database.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "watch": "nodemon src/index.js",
+    "seed": "node src/seeds/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C-Sim/eComm-back-end.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/C-Sim/eComm-back-end/issues"
+  },
+  "homepage": "https://github.com/C-Sim/eComm-back-end#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.2"
+  }
+}
